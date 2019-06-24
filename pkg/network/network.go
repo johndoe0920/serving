@@ -251,6 +251,7 @@ func NewConfigFromConfigMap(configMap *corev1.ConfigMap) (*Config, error) {
 	}
 
 	nc.AutoTLS = strings.ToLower(configMap.Data[AutoTLSKey]) == "enabled"
+	nc.CheckExistingCerts = strings.ToLower(configMap.Data[CheckExistingCertsKey]) == "enabled"
 
 	switch strings.ToLower(configMap.Data[HTTPProtocolKey]) {
 	case string(HTTPEnabled):
