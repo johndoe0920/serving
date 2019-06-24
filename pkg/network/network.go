@@ -109,6 +109,8 @@ var (
 	// that specifies enabling auto-TLS or not.
 	AutoTLSKey = "autoTLS"
 
+	CheckExistingCertsKey = "checkExistingCerts"
+
 	// HTTPProtocolKey is the name of the configuration entry that
 	// specifies the HTTP endpoint behavior of Knative ingress.
 	HTTPProtocolKey = "httpProtocol"
@@ -152,6 +154,8 @@ type Config struct {
 
 	// AutoTLS specifies if auto-TLS is enabled or not.
 	AutoTLS bool
+
+	CheckExistingCerts bool
 
 	// HTTPProtocol specifics the behavior of HTTP endpoint of Knative
 	// ingress.
