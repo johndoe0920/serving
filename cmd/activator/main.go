@@ -126,7 +126,7 @@ func main() {
 	logger := createdLogger.With(zap.String(logkey.ControllerType, "activator"))
 	defer flush(logger)
 
-	logger.Info("Starting the knative activator")
+	logger.Info("Starting the sandwich knative activator")
 
 	clusterConfig, err := clientcmd.BuildConfigFromFlags(*masterURL, *kubeconfig)
 	if err != nil {
