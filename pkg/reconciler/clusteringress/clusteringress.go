@@ -179,6 +179,8 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 	if checkExistingCerts(ctx) {
 		logger.Info("Checking for existing certs")
+	} else {
+		logger.Info("Flag to check for existing certs was not set.")
 	}
 	if enablesAutoTLS(ctx) {
 		if !ci.IsPublic() {
