@@ -177,6 +177,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 	ci.Status.MarkLoadBalancerReady(getLBStatus(gatewayServiceURLFromContext(ctx, ci)))
 	ci.Status.ObservedGeneration = ci.Generation
 
+	logger.Infof("Magneto")
 	if enablesAutoTLS(ctx) {
 		if !ci.IsPublic() {
 			logger.Infof("ClusterIngress %s is not public. So no need to configure TLS.", ci.Name)

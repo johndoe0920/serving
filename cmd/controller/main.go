@@ -54,7 +54,6 @@ func main() {
 	defer flush(logger)
 
 	logger.Error("Wolverine")
-	log.Fatal("Wolverine")
 	sharedmain.Main("controller",
 		configuration.NewController,
 		labeler.NewRouteToConfigurationController,
