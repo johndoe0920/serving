@@ -226,7 +226,7 @@ func enablesAutoTLS(ctx context.Context) bool {
 }
 
 func checkExistingCerts(ctx context.Context) bool {
-	return config.FromContext(ctx).Network.checkExistingCerts
+	return config.FromContext(ctx).Network.CheckExistingCerts
 }
 
 func getLBStatus(gatewayServiceURL string) []v1alpha1.LoadBalancerIngressStatus {
