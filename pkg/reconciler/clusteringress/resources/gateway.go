@@ -118,6 +118,37 @@ func MakeServers(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, or
 	return SortServers(servers), nil
 }
 
+func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, originSecrets map[string]*corev1.Secret) ([]v1alpha3.Server, error) {
+	servers := []v1alpha3.Server{}
+	// TODO(zhiminx): for the hosts that does not included in the ClusterIngressTLS but listed in the ClusterIngressRule,
+	// do we consider them as hosts for HTTP?
+	for i, rules := range ci.Spec.Rules {
+		// credentialName := tls.SecretName
+		// // If the origin secret is not in the target namespace, then it should have been
+		// // copied into the target namespace. So we use the name of the copy.
+		// if tls.SecretNamespace != gatewayServiceNamespace {
+		// 	originSecret, ok := originSecrets[secretKey(tls)]
+		// 	if !ok {
+		// 		return nil, fmt.Errorf("unable to get the original secret %s/%s", tls.SecretNamespace, tls.SecretName)
+		// 	}
+		// 	credentialName = targetSecret(originSecret, ci)
+		// }
+		servers = append(servers, v1alpha3.Server{
+			Hosts: rules.Hosts[0],
+			Port: v1alpha3.Port{
+				Name:     fmt.Sprintf("%s:%d", ci.Name, i),
+				Number:   443,
+				Protocol: v1alpha3.ProtocolHTTPS,
+			},
+			TLS: &v1alpha3.TLSOptions{
+				Mode:           v1alpha3.TLSModeMutual,
+				CredentialName: rules.Hosts[0],
+			},
+		})
+	}
+	return SortServers(servers), nil
+}
+
 // MakeHTTPServer creates a HTTP Gateway `Server` based on the HTTPProtocol
 // configureation.
 func MakeHTTPServer(httpProtocol network.HTTPProtocol) *v1alpha3.Server {
