@@ -187,7 +187,9 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 		logger.Info("Reconciling gateway with manually added secrets/certs.")
 		secrets, err := resources.GetCINamespaceSecrets(ci, c.secretLister, "istio-system")
-
+		if err != nil {
+			return err
+		}
 		for _, gatewayName := range gatewayNames {
 			ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
 			if err != nil {
