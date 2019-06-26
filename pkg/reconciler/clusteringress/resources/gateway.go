@@ -126,8 +126,9 @@ func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNam
 		// for host in rules.Hosts{
 		// 	hosts = append(hosts, )
 		// }
+		var domainName = strings.SplitAfterN(rules.Hosts[0], ".", 2)
 		servers = append(servers, v1alpha3.Server{
-			Hosts: rules.Hosts,
+			Hosts: domainName,
 			Port: v1alpha3.Port{
 				Name:     fmt.Sprintf("%s:%d", ci.Name, i),
 				Number:   443,
