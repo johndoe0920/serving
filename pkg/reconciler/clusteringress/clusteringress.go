@@ -179,6 +179,23 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 	if checkExistingCerts(ctx) {
 		logger.Info("Checking for existing certs")
+
+		fmt.Println("rules: ", ci.Spec.Rules)
+		fmt.Printf("rules type %T\n", ci.Spec.Rules)
+
+		fmt.Println("TLS: ", ci.Spec.TLS)
+		for _, tls := range ci.Spec.TLS {
+			fmt.Println("tls.SecretName: ", tls.SecretName)
+			fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
+			secret, _ := c.secretLister.Secrets(tls.SecretNamespace).Get(tls.SecretName)
+			fmt.Printf("Secrets: ", secret)
+		}
+
+		fmt.Printf("Host \n", ci.Spec.Rules[0].Hosts[0])
+		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
+		secret, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
+		fmt.Printf("Host Secrets: \n", secret)
+
 	} else {
 		logger.Info("Flag to check for existing certs was not set.")
 	}
@@ -203,22 +220,6 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		// hostnames, err := c.secretLister.Secrets("istio-system").Get(rules.Host)
 		// fmt.Println("hostnames: ", hostnames)
 		// }
-
-		fmt.Println("rules: ", ci.Spec.Rules)
-		fmt.Printf("rules type %T\n", ci.Spec.Rules)
-		// fmt.Println("Hosts: ", ci.Spec.Rules.Hosts)
-		fmt.Println("TLS: ", ci.Spec.TLS)
-		for _, tls := range ci.Spec.TLS {
-			fmt.Println("tls.SecretName: ", tls.SecretName)
-			fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
-			secret, _ := c.secretLister.Secrets(tls.SecretNamespace).Get(tls.SecretName)
-			fmt.Printf("Secrets: ", secret)
-		}
-
-		fmt.Printf("Host \n", ci.Spec.Rules[0].Hosts[0])
-		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		secret, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
-		fmt.Printf("Host Secrets: \n", secret)
 
 		// fmt.Println("ClusterIngress: ", ci)
 		// fmt.Println("map: ", originSecrets)
