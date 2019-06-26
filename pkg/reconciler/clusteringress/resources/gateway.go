@@ -118,21 +118,13 @@ func MakeServers(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, or
 	return SortServers(servers), nil
 }
 
-// MakeServersFromExistingCerts is used to update gateway with non-cert-manager created certs.
+// MakeServersFromExistingCerts creates the expected Gateway Servers that are referenced by the ClusterIngree.
+// This method builds these Servers with manually added secrets instead of AutoTLS created ones.
 func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, originSecrets map[string]*corev1.Secret) ([]v1alpha3.Server, error) {
 	servers := []v1alpha3.Server{}
 	for i, rules := range ci.Spec.Rules {
-		// var hosts []string
-		// for host in rules.Hosts{
-		// 	hosts = append(hosts, )
-		// }
-		// var slice = strings.SplitAfterN(rules.Hosts[0], ".", 2)
-		var domainName = "*" + rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(rules.Hosts[0])]
-		hostname := []string{domainName}
-		fmt.Printf("domainName %s\n", domainName)
-		fmt.Printf("domainName Type %T\n", domainName)
-		fmt.Printf("rules.Hosts %s\n", rules.Hosts)
-		fmt.Printf("rules.Hosts Type %T\n", rules.Hosts)
+		// var domainName = "*" + rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(rules.Hosts[0])]
+		hostname := []string{"*" + rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(rules.Hosts[0])]}
 		servers = append(servers, v1alpha3.Server{
 			Hosts: hostname,
 			Port: v1alpha3.Port{

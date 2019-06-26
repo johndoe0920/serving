@@ -21,7 +21,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/knative/pkg/tracker"
 
@@ -186,35 +185,18 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			return err
 		}
 
-		logger.Info("Checking for existing certs")
+		logger.Info("Reconciling gateway with manually added secrets/certs.")
 
-		fmt.Println("rules: %s \n ", ci.Spec.Rules)
-		fmt.Printf("rules type %T\n", ci.Spec.Rules)
-
-		// fmt.Println("TLS: ", ci.Spec.TLS)
-		// for _, tls := range ci.Spec.TLS {
-		// 	fmt.Println("tls.SecretName: ", tls.SecretName)
-		// 	fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
-		// 	secret, _ := c.secretLister.Secrets(tls.SecretNamespace).Get(tls.SecretName)
-		// 	fmt.Printf("Secrets: ", secret)
+		// var host = ci.Spec.Rules[0].Hosts[0]
+		// secret, err := c.secretLister.Secrets("istio-system").Get(host)
+		// if err != nil {
+		// 	return err
 		// }
 
-		var host = ci.Spec.Rules[0].Hosts[0]
-		fmt.Printf("Host %s \n", ci.Spec.Rules[0].Hosts[0])
-		var domainName = strings.SplitAfterN(host, ".", 2)
-		fmt.Printf("domainName %s\n", domainName)
-		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		secret, err := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
-		if err != nil {
-			return err
-		}
-		fmt.Printf("Host Secrets: %s \n", secret)
-		fmt.Sprintf("Weird print statement %s/%s\n", "istio-system", ci.Spec.Rules[0].Hosts[0])
-
-		secrets := map[string]*corev1.Secret{}
-		ref := fmt.Sprintf("%s/%s", "istio-system", ci.Spec.Rules[0].Hosts[0])
-		fmt.Printf("ref: %s \n", ref)
-		secrets[ref] = secret
+		// secrets := map[string]*corev1.Secret{}
+		// ref := fmt.Sprintf("%s/%s", "istio-system", host)
+		// secrets[ref] = secret
+		secrets, err := resources.GetCINamespaceSecrets(ci, c.secretLister, "istio-system")
 
 		for _, gatewayName := range gatewayNames {
 			ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
@@ -250,13 +232,6 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			return err
 		}
 
-		// for _, rules := range ci.Spec.Rules {
-		// hostnames, err := c.secretLister.Secrets("istio-system").Get(rules.Host)
-		// fmt.Println("hostnames: ", hostnames)
-		// }
-
-		// fmt.Println("ClusterIngress: ", ci)
-		// fmt.Println("map: ", originSecrets)
 		targetSecrets := resources.MakeSecrets(ctx, originSecrets, ci)
 		if err := c.reconcileCertSecrets(ctx, ci, targetSecrets); err != nil {
 			return err
