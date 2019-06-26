@@ -122,6 +122,10 @@ func MakeServers(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, or
 func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, originSecrets map[string]*corev1.Secret) ([]v1alpha3.Server, error) {
 	servers := []v1alpha3.Server{}
 	for i, rules := range ci.Spec.Rules {
+		// var hosts []string
+		// for host in rules.Hosts{
+		// 	hosts = append(hosts, )
+		// }
 		servers = append(servers, v1alpha3.Server{
 			Hosts: rules.Hosts,
 			Port: v1alpha3.Port{

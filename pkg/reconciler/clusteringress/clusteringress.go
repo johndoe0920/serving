@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"strings"
 
 	"github.com/knative/pkg/tracker"
 
@@ -198,7 +199,10 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		// 	fmt.Printf("Secrets: ", secret)
 		// }
 
+		var host = ci.Spec.Rules[0].Hosts[0]
 		fmt.Printf("Host \n", ci.Spec.Rules[0].Hosts[0])
+		host = strings.SplitAfterN(host, ",", 2)
+		fmt.Printf("Host after formatting \n", ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
 		secret, err := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		if err != nil {
