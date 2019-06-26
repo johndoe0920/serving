@@ -195,7 +195,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
 		secret, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Host Secrets: \n", secret)
-		fmt.Sprintf("%s/%s", "istio-system", ci.Spec.Rules[0].Hosts[0])
+		fmt.Sprintf("Weird print statement %s/%s\n", "istio-system", ci.Spec.Rules[0].Hosts[0])
 
 		// for _, gatewayName := range gatewayNames {
 		// 	ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
