@@ -185,11 +185,12 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			return err
 		}
 
-		logger.Info("Reconciling gateway with manually added secrets/certs.")
-		secrets, err := resources.GetCINamespaceSecrets(ci, c.secretLister, "istio-system")
+		// This works under the assumption the secrets/certs exist under istio-system namespace
+		secrets, err := resources.GetClusterIngressHostSecrets(ci, c.secretLister, "istio-system")
 		if err != nil {
 			return err
 		}
+
 		for _, gatewayName := range gatewayNames {
 			ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
 			if err != nil {
@@ -204,9 +205,8 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			}
 		}
 
-	} else {
-		logger.Info("Flag to check for existing certs was not set.")
 	}
+
 	if enablesAutoTLS(ctx) {
 		if !ci.IsPublic() {
 			logger.Infof("ClusterIngress %s is not public. So no need to configure TLS.", ci.Name)
