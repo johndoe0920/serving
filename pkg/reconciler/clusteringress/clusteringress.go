@@ -208,7 +208,10 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		fmt.Printf("%T\n", ci.Spec.Rules)
 		// fmt.Println("Hosts: ", ci.Spec.Rules.Hosts)
 		fmt.Println("TLS: ", ci.Spec.TLS)
-		fmt.Printf("%T\n", ci.Spec.TLS.SecretName)
+		for _, tls := range ci.Spec.TLS {
+			fmt.Println("tls.SecretName: ", tls.SecretName)
+			fmt.Printf("%T\n", tls.SecretName)
+		}
 		// fmt.Println("Secrets: ", c.secretLister.Secrets("default").List(""))
 		fmt.Println("ClusterIngress: ", ci)
 		// keys := make([]int, 0, len(originSecrets))
