@@ -45,6 +45,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/equality"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 
 	corev1listers "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
@@ -205,19 +206,16 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		// }
 
 		fmt.Println("rules: ", ci.Spec.Rules)
-		fmt.Printf("%T\n", ci.Spec.Rules)
+		fmt.Printf("rules type %T\n", ci.Spec.Rules)
 		// fmt.Println("Hosts: ", ci.Spec.Rules.Hosts)
 		fmt.Println("TLS: ", ci.Spec.TLS)
 		for _, tls := range ci.Spec.TLS {
 			fmt.Println("tls.SecretName: ", tls.SecretName)
-			fmt.Printf("%T\n", tls.SecretName)
+			fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
 		}
+		var sel = new Selector()
 		fmt.Println("Secrets: ", c.secretLister.Secrets("istio-system").List(ci.Spec.Rules[0].Hosts[0]))
 		fmt.Println("ClusterIngress: ", ci)
-		// keys := make([]int, 0, len(originSecrets))
-		// for k := range originSecrets {
-		// 	logger.Infof("Key: %s", k)
-		// }
 		// fmt.Println("map: ", originSecrets)
 		targetSecrets := resources.MakeSecrets(ctx, originSecrets, ci)
 		if err := c.reconcileCertSecrets(ctx, ci, targetSecrets); err != nil {
