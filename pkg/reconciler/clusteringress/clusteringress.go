@@ -188,7 +188,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 		logger.Info("Checking for existing certs")
 
-		fmt.Println("rules: ", ci.Spec.Rules)
+		fmt.Println("rules: %s \n ", ci.Spec.Rules)
 		fmt.Printf("rules type %T\n", ci.Spec.Rules)
 
 		// fmt.Println("TLS: ", ci.Spec.TLS)
@@ -200,20 +200,20 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		// }
 
 		var host = ci.Spec.Rules[0].Hosts[0]
-		fmt.Printf("Host \n", ci.Spec.Rules[0].Hosts[0])
-		var hostarray = strings.SplitAfterN(host, ",", 2)
-		fmt.Printf("Host after formatting \n", hostarray)
+		fmt.Printf("Host %s \n", ci.Spec.Rules[0].Hosts[0])
+		var hostarray = strings.SplitAfterN(host, ".", 2)
+		fmt.Printf("Host after formatting %s\n", hostarray)
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
 		secret, err := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Host Secrets: \n", secret)
+		fmt.Printf("Host Secrets: %s \n", secret)
 		fmt.Sprintf("Weird print statement %s/%s\n", "istio-system", ci.Spec.Rules[0].Hosts[0])
 
 		secrets := map[string]*corev1.Secret{}
 		ref := fmt.Sprintf("%s/%s", "istio-system", ci.Spec.Rules[0].Hosts[0])
-		fmt.Printf("ref: \n", ref)
+		fmt.Printf("ref: %s \n", ref)
 		secrets[ref] = secret
 
 		for _, gatewayName := range gatewayNames {
