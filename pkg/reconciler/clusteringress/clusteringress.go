@@ -200,8 +200,8 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		}
 		for _, rules := range ci.Spec.Rules {
 
-			hostnames, err := c.secretLister.Secrets("default").Get(rules.Hosts)
-			fmt.Println("hostnames: ", hostnames)
+			// hostnames, err := c.secretLister.Secrets("default").Get(rules.Hosts)
+			fmt.Println("rules: ", rules)
 
 		}
 		// fmt.Println("Secrets: ", c.secretLister.Secrets("default").List(""))
