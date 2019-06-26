@@ -202,6 +202,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		for k := range originSecrets {
 			logger.Infof("Key: %s", k)
 		}
+		fmt.Println("map: ", originSecrets)
 		targetSecrets := resources.MakeSecrets(ctx, originSecrets, ci)
 		if err := c.reconcileCertSecrets(ctx, ci, targetSecrets); err != nil {
 			return err
