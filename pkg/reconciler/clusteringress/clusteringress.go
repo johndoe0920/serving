@@ -193,7 +193,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 		fmt.Printf("Host \n", ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		secret, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
+		secrets, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Host Secrets: \n", secret)
 
 		for _, gatewayName := range gatewayNames {
@@ -201,7 +201,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			if err != nil {
 				return err
 			}
-			desired, err := resources.MakeServersFromExistingCerts(ci, ns, originSecrets)
+			desired, err := resources.MakeServersFromExistingCerts(ci, ns, secrets)
 			if err != nil {
 				return err
 			}
