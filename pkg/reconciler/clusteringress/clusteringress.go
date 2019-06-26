@@ -45,7 +45,6 @@ import (
 	"k8s.io/apimachinery/pkg/api/equality"
 	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/labels"
 
 	corev1listers "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
@@ -213,8 +212,8 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			fmt.Println("tls.SecretName: ", tls.SecretName)
 			fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
 		}
-		var sel = new Selector()
-		fmt.Println("Secrets: ", c.secretLister.Secrets("istio-system").List(ci.Spec.Rules[0].Hosts[0]))
+		// fmt.Println("Secrets: ", c.secretLister.Secrets("istio-system").List(ci.Spec.Rules[0].Hosts[0]))
+		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
 		fmt.Println("ClusterIngress: ", ci)
 		// fmt.Println("map: ", originSecrets)
 		targetSecrets := resources.MakeSecrets(ctx, originSecrets, ci)
