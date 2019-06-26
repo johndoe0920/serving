@@ -216,7 +216,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		}
 
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		secret, err := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0]
+		secret, err := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Host Secrets: ", secret)
 
 		// fmt.Println("ClusterIngress: ", ci)
