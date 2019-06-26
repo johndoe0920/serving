@@ -198,6 +198,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		if err != nil {
 			return err
 		}
+		fmt.Println("ClusterIngress: ", originSecrets)
 		// keys := make([]int, 0, len(originSecrets))
 		for k := range originSecrets {
 			logger.Infof("Key: %s", k)
