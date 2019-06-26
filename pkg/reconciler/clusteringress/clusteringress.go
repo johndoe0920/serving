@@ -204,13 +204,14 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 			fmt.Println("rules: ", rules)
 
 		}
+		fmt.Println("TLS: ", ci.Spec.TLS)
 		// fmt.Println("Secrets: ", c.secretLister.Secrets("default").List(""))
 		fmt.Println("ClusterIngress: ", ci)
 		// keys := make([]int, 0, len(originSecrets))
-		for k := range originSecrets {
-			logger.Infof("Key: %s", k)
-		}
-		fmt.Println("map: ", originSecrets)
+		// for k := range originSecrets {
+		// 	logger.Infof("Key: %s", k)
+		// }
+		// fmt.Println("map: ", originSecrets)
 		targetSecrets := resources.MakeSecrets(ctx, originSecrets, ci)
 		if err := c.reconcileCertSecrets(ctx, ci, targetSecrets); err != nil {
 			return err
