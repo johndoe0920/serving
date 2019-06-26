@@ -50,7 +50,7 @@ func GetCINamespaceSecrets(ci *v1alpha1.ClusterIngress, secretLister corev1liste
 
 	secrets := map[string]*corev1.Secret{}
 	var host = ci.Spec.Rules[0].Hosts[0]
-	secret, err := c.secretLister.Secrets(ns).Get(host)
+	secret, err := secretLister.Secrets(ns).Get(host)
 	if err != nil {
 		return nil, err
 	}
