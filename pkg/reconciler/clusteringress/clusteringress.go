@@ -200,7 +200,7 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		}
 		for _, rules := range ci.Spec.Rules {
 
-			// hostnames, err := c.secretLister.Secrets("default").Get(rules.Hosts)
+			hostnames, err := c.secretLister.Secrets("istio-system").Get(rules[0])
 			fmt.Println("rules: ", rules)
 
 		}
