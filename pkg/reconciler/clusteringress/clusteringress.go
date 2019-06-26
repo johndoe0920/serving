@@ -178,6 +178,13 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 	ci.Status.ObservedGeneration = ci.Generation
 
 	if checkExistingCerts(ctx) {
+
+		// Add the finalizer before adding `Servers` into Gateway so that we can be sure
+		// the `Servers` get cleaned up from Gateway.
+		if err := c.ensureFinalizer(ci); err != nil {
+			return err
+		}
+
 		logger.Info("Checking for existing certs")
 
 		fmt.Println("rules: ", ci.Spec.Rules)
