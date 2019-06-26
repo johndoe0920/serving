@@ -198,12 +198,13 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		if err != nil {
 			return err
 		}
+
 		for _, rules := range ci.Spec.Rules {
-
 			hostnames, err := c.secretLister.Secrets("istio-system").Get(rules[0])
-			fmt.Println("rules: ", rules)
-
+			fmt.Println("hostnames: ", hostnames)
 		}
+
+		fmt.Println("rules: ", ci.Spec.Rules)
 		fmt.Println("TLS: ", ci.Spec.TLS)
 		// fmt.Println("Secrets: ", c.secretLister.Secrets("default").List(""))
 		fmt.Println("ClusterIngress: ", ci)
