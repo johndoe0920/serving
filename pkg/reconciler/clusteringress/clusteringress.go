@@ -211,10 +211,13 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		for _, tls := range ci.Spec.TLS {
 			fmt.Println("tls.SecretName: ", tls.SecretName)
 			fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
+			fmt.Println("Secrets: ", c.secretLister.Secrets("istio-system").List(tls.SecretName)
 		}
-		// fmt.Println("Secrets: ", c.secretLister.Secrets("istio-system").List(ci.Spec.Rules[0].Hosts[0]))
+
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		fmt.Println("ClusterIngress: ", ci)
+		fmt.Println("Secrets: ", c.secretLister.Secrets("istio-system").List(ci.Spec.Rules[0].Hosts[0]))
+		
+		// fmt.Println("ClusterIngress: ", ci)
 		// fmt.Println("map: ", originSecrets)
 		targetSecrets := resources.MakeSecrets(ctx, originSecrets, ci)
 		if err := c.reconcileCertSecrets(ctx, ci, targetSecrets); err != nil {
