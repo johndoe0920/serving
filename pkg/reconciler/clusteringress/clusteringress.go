@@ -193,22 +193,23 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 		fmt.Printf("Host \n", ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		secrets, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
+		secret, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Host Secrets: \n", secret)
+		fmt.Sprintf("%s/%s", "istio-system", ci.Spec.Rules[0].Hosts[0])
 
-		for _, gatewayName := range gatewayNames {
-			ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
-			if err != nil {
-				return err
-			}
-			desired, err := resources.MakeServersFromExistingCerts(ci, ns, secrets)
-			if err != nil {
-				return err
-			}
-			if err := c.reconcileGateway(ctx, ci, gatewayName, desired); err != nil {
-				return err
-			}
-		}
+		// for _, gatewayName := range gatewayNames {
+		// 	ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	desired, err := resources.MakeServersFromExistingCerts(ci, ns, secrets)
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	if err := c.reconcileGateway(ctx, ci, gatewayName, desired); err != nil {
+		// 		return err
+		// 	}
+		// }
 
 	} else {
 		logger.Info("Flag to check for existing certs was not set.")
