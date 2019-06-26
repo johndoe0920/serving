@@ -211,12 +211,12 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 		for _, tls := range ci.Spec.TLS {
 			fmt.Println("tls.SecretName: ", tls.SecretName)
 			fmt.Printf("tls.SecretName type %T\n", tls.SecretName)
-			secret, err := c.secretLister.Secrets(tls.SecretNamespace).Get(tls.SecretName)
+			secret, _ := c.secretLister.Secrets(tls.SecretNamespace).Get(tls.SecretName)
 			fmt.Printf("Secrets: ", secret)
 		}
 
 		fmt.Printf("Hosts Type %T\n", ci.Spec.Rules[0].Hosts[0])
-		secret, err := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
+		secret, _ := c.secretLister.Secrets("istio-system").Get(ci.Spec.Rules[0].Hosts[0])
 		fmt.Printf("Host Secrets: ", secret)
 
 		// fmt.Println("ClusterIngress: ", ci)
