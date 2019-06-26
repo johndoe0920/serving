@@ -134,7 +134,7 @@ func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNam
 		// 	credentialName = targetSecret(originSecret, ci)
 		// }
 		servers = append(servers, v1alpha3.Server{
-			Hosts: rules.Hosts[0],
+			Hosts: rules.Hosts,
 			Port: v1alpha3.Port{
 				Name:     fmt.Sprintf("%s:%d", ci.Name, i),
 				Number:   443,
