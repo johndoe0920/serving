@@ -127,7 +127,7 @@ func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNam
 		// 	hosts = append(hosts, )
 		// }
 		// var slice = strings.SplitAfterN(rules.Hosts[0], ".", 2)
-		var domainName = rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(slice)]
+		var domainName = rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(rules.Hosts[0])]
 		fmt.Printf("domainName %s\n", domainName)
 		fmt.Printf("domainName Type %T\n", domainName)
 		fmt.Printf("rules.Hosts %s\n", rules.Hosts)
