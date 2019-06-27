@@ -109,6 +109,8 @@ var (
 	// that specifies enabling auto-TLS or not.
 	AutoTLSKey = "autoTLS"
 
+	// CheckExistingCertsKey is the name of the configuration entry
+	// that specifies creation of TLS entries in gateway with existing secrets.
 	CheckExistingCertsKey = "checkExistingCerts"
 
 	// HTTPProtocolKey is the name of the configuration entry that

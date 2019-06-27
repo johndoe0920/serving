@@ -17,13 +17,6 @@ limitations under the License.
 package main
 
 import (
-	"log"
-	"os"
-	"github.com/knative/pkg/configmap"
-	"github.com/knative/serving/pkg/logging"
-	"github.com/knative/pkg/metrics"
-	"go.uber.org/zap"
-	"github.com/knative/pkg/logging/logkey"
 	// The set of controllers this controller process runs.
 	"github.com/knative/serving/pkg/reconciler/configuration"
 	"github.com/knative/serving/pkg/reconciler/labeler"
@@ -36,24 +29,7 @@ import (
 	"github.com/knative/pkg/injection/sharedmain"
 )
 
-const (
-    component = "controller"
-)
-
 func main() {
-	cm, err := configmap.Load("/etc/config-logging")
-	if err != nil {
-		log.Fatal("Error loading logging configuration:", err)
-	}
-	logConfig, err := logging.NewConfigFromMap(cm)
-	if err != nil {
-		log.Fatal("Error loading logging configuration:", err)
-	}
-	createdLogger, _ := logging.NewLoggerFromConfig(logConfig, component)
-	logger := createdLogger.With(zap.String(logkey.ControllerType, "activator"))
-	defer flush(logger)
-
-	logger.Error("Wolverine")
 	sharedmain.Main("controller",
 		configuration.NewController,
 		labeler.NewRouteToConfigurationController,
@@ -63,11 +39,3 @@ func main() {
 		service.NewController,
 	)
 }
-
-func flush(logger *zap.SugaredLogger) {
-	logger.Sync()
-	os.Stdout.Sync()
-	os.Stderr.Sync()
-	metrics.FlushExporter()
-}
-

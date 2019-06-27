@@ -123,8 +123,9 @@ func MakeServers(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, or
 func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, originSecrets map[string]*corev1.Secret) ([]v1alpha3.Server, error) {
 	servers := []v1alpha3.Server{}
 	for i, rules := range ci.Spec.Rules {
-		// var domainName = "*" + rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(rules.Hosts[0])]
-		hostname := []string{"*" + rules.Hosts[0][strings.Index(rules.Hosts[0], "."):len(rules.Hosts[0])]}
+		// Replace first part of fqdn with wildcard to be used as the Hosts field.
+		credName = rules.Hosts[0]
+		hostname := []string{"*" + credName[strings.Index(credName, "."):len(credName)]}
 		servers = append(servers, v1alpha3.Server{
 			Hosts: hostname,
 			Port: v1alpha3.Port{
@@ -134,7 +135,7 @@ func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNam
 			},
 			TLS: &v1alpha3.TLSOptions{
 				Mode:           v1alpha3.TLSModeMutual,
-				CredentialName: rules.Hosts[0],
+				CredentialName: credName,
 			},
 		})
 	}
