@@ -109,6 +109,10 @@ var (
 	// that specifies enabling auto-TLS or not.
 	AutoTLSKey = "autoTLS"
 
+	// CheckExistingCertsKey is the name of the configuration entry
+	// that specifies creation of TLS entries in gateway with existing secrets.
+	CheckExistingCertsKey = "checkExistingCerts"
+
 	// HTTPProtocolKey is the name of the configuration entry that
 	// specifies the HTTP endpoint behavior of Knative ingress.
 	HTTPProtocolKey = "httpProtocol"
@@ -152,6 +156,8 @@ type Config struct {
 
 	// AutoTLS specifies if auto-TLS is enabled or not.
 	AutoTLS bool
+
+	CheckExistingCerts bool
 
 	// HTTPProtocol specifics the behavior of HTTP endpoint of Knative
 	// ingress.
@@ -247,6 +253,8 @@ func NewConfigFromConfigMap(configMap *corev1.ConfigMap) (*Config, error) {
 	}
 
 	nc.AutoTLS = strings.ToLower(configMap.Data[AutoTLSKey]) == "enabled"
+
+	nc.CheckExistingCerts = strings.ToLower(configMap.Data[CheckExistingCertsKey]) == "enabled"
 
 	switch strings.ToLower(configMap.Data[HTTPProtocolKey]) {
 	case string(HTTPEnabled):

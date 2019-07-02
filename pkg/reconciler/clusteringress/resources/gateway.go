@@ -118,6 +118,30 @@ func MakeServers(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, or
 	return SortServers(servers), nil
 }
 
+// MakeServersFromExistingCerts creates the expected Gateway Servers that are referenced by the ClusterIngree.
+// This method builds these Servers with manually added secrets instead of AutoTLS created ones.
+func MakeServersFromExistingCerts(ci *v1alpha1.ClusterIngress, gatewayServiceNamespace string, originSecrets map[string]*corev1.Secret) ([]v1alpha3.Server, error) {
+	servers := []v1alpha3.Server{}
+	for i, rules := range ci.Spec.Rules {
+		// Replace first part of fqdn with wildcard to be used as the Hosts field.
+		credName = rules.Hosts[0]
+		hostname := []string{"*" + credName[strings.Index(credName, "."):len(credName)]}
+		servers = append(servers, v1alpha3.Server{
+			Hosts: hostname,
+			Port: v1alpha3.Port{
+				Name:     fmt.Sprintf("%s:%d", ci.Name, i),
+				Number:   443,
+				Protocol: v1alpha3.ProtocolHTTPS,
+			},
+			TLS: &v1alpha3.TLSOptions{
+				Mode:           v1alpha3.TLSModeMutual,
+				CredentialName: credName,
+			},
+		})
+	}
+	return SortServers(servers), nil
+}
+
 // MakeHTTPServer creates a HTTP Gateway `Server` based on the HTTPProtocol
 // configureation.
 func MakeHTTPServer(httpProtocol network.HTTPProtocol) *v1alpha3.Server {

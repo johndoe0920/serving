@@ -177,6 +177,36 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 	ci.Status.MarkLoadBalancerReady(getLBStatus(gatewayServiceURLFromContext(ctx, ci)))
 	ci.Status.ObservedGeneration = ci.Generation
 
+	if checkExistingCerts(ctx) {
+
+		// Add the finalizer before adding `Servers` into Gateway so that we can be sure
+		// the `Servers` get cleaned up from Gateway.
+		if err := c.ensureFinalizer(ci); err != nil {
+			return err
+		}
+
+		// This works under the assumption the secrets/certs exist under istio-system namespace
+		secrets, err := resources.GetClusterIngressHostSecrets(ci, c.secretLister, "istio-system")
+		if err != nil {
+			return err
+		}
+
+		for _, gatewayName := range gatewayNames {
+			ns, err := resources.GatewayServiceNamespace(config.FromContext(ctx).Istio.IngressGateways, gatewayName)
+			if err != nil {
+				return err
+			}
+			desired, err := resources.MakeServersFromExistingCerts(ci, ns, secrets)
+			if err != nil {
+				return err
+			}
+			if err := c.reconcileGateway(ctx, ci, gatewayName, desired); err != nil {
+				return err
+			}
+		}
+
+	}
+
 	if enablesAutoTLS(ctx) {
 		if !ci.IsPublic() {
 			logger.Infof("ClusterIngress %s is not public. So no need to configure TLS.", ci.Name)
@@ -220,6 +250,10 @@ func (c *Reconciler) reconcile(ctx context.Context, ci *v1alpha1.ClusterIngress)
 
 func enablesAutoTLS(ctx context.Context) bool {
 	return config.FromContext(ctx).Network.AutoTLS
+}
+
+func checkExistingCerts(ctx context.Context) bool {
+	return config.FromContext(ctx).Network.CheckExistingCerts
 }
 
 func getLBStatus(gatewayServiceURL string) []v1alpha1.LoadBalancerIngressStatus {

@@ -46,6 +46,22 @@ func GetSecrets(ci *v1alpha1.ClusterIngress, secretLister corev1listers.SecretLi
 	return secrets, nil
 }
 
+// GetClusterIngressHostSecrets gets the secrets whose name matches the host listed in the given ClusterIngress.
+func GetClusterIngressHostSecrets(ci *v1alpha1.ClusterIngress, secretLister corev1listers.SecretLister, ns string) (map[string]*corev1.Secret, error) {
+
+	secrets := map[string]*corev1.Secret{}
+	var host = ci.Spec.Rules[0].Hosts[0]
+	secret, err := secretLister.Secrets(ns).Get(host)
+	if err != nil {
+		return nil, err
+	}
+
+	ref := fmt.Sprintf("%s/%s", ns, host)
+	secrets[ref] = secret
+
+	return secrets, nil
+}
+
 // MakeSecrets makes copies of the origin Secrets under the namespace of Istio gateway service.
 func MakeSecrets(ctx context.Context, originSecrets map[string]*corev1.Secret, ci *v1alpha1.ClusterIngress) []*corev1.Secret {
 	gatewaySvcNamespaces := getAllGatewaySvcNamespaces(ctx)
